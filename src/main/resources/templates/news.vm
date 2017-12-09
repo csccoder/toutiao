@@ -1,0 +1,74 @@
+<html>
+    <head>
+        <title>news</title>
+    </head>
+    <body>
+        ##单行注释
+        #*
+            多行注释 你看不到哦
+         *#
+        #set($user="root")
+        user:$user ${user}<br>
+
+        ## $是 velocity中变量的申明符
+        ## !代表如果变量没定义 这不显示。否则显示变量名
+        $user1<br>
+        $!user2<br>
+        ##
+
+        ##
+        #set($hello_world="helloWorld!")
+        hello world<br>
+        hello_world:hello_world<br>
+        hello_world:$hello_world<br>
+        hello_world.length():$hello_world.length()<br>
+        hello_world.substring(5):$hello_world.substring(5)<br>
+
+        <br>
+        ##遍历
+        ##index从0开始 ，count从1开始计数
+        #set($arrays=["apple","banana","orange"])
+        #foreach($str in $arrays)
+            #if($foreach.index == $arrays.size() - 1)
+                <span style="color: red;">这是遍历的最后一个元素</span>
+            #end
+            $foreach.index  =>$foreach.count => $str
+            <br>
+
+        #end
+
+        #foreach($addr in $!addrs)
+            $!addr
+            #if($velocityCount!=$!addrs.size())
+            ,
+            #end
+        #end
+
+        <br>
+        <br>
+
+        #foreach($user in $users)
+            {$user.id,$user.name},{$user.getId(),$user.getName()}
+            <br>
+        #end
+
+
+        #*
+            parse ，include的区别
+         *#
+        #set($date="2017 12-9")
+        #include("header.vm")
+        <br>
+        #parse("header.vm")
+
+
+        ## macro 定义函数
+        #macro(printList,$index,$value)
+            =>index:$index , value:$value
+        #end
+
+        #foreach($addr in $addrs)
+            #printList($foreach.count,$addr)
+        #end
+    </body>
+</html>
