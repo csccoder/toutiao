@@ -12,7 +12,7 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
-@Controller
+//@Controller
 public class IndexController {
 
     @RequestMapping(path = {"/", "/index"})
