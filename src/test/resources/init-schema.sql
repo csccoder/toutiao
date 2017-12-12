@@ -22,3 +22,19 @@ CREATE TABLE `news` (
   `user_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- 为用户表user添加 email字段 ,对之前添加的数据赋默认值，
+alter table `user` add column `email` varchar(20) not null ;
+-- 如果之前添加了数据 ，则需手动执行下一条语句
+-- update `user` set email=concat(id,"@qq.com") where email='';
+alter table `user` add unique key(`email`); -- 添加唯一索引
+
+DROP TABLE IF EXISTS `login_ticket`;
+CREATE TABLE `login_ticket` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `user_id` INT NOT NULL,
+  `ticket` VARCHAR(45) NOT NULL,
+  `expired` DATETIME NOT NULL,
+  `status` INT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `ticket_UNIQUE` (`ticket` ASC));

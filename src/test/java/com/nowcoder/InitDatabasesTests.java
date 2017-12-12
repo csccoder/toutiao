@@ -1,9 +1,12 @@
 package com.nowcoder;
 
+import com.nowcoder.dao.LoginTicketDAO;
 import com.nowcoder.dao.NewsDAO;
 import com.nowcoder.dao.UserDAO;
+import com.nowcoder.model.LoginTicket;
 import com.nowcoder.model.News;
 import com.nowcoder.model.User;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,25 +28,39 @@ public class InitDatabasesTests {
 	@Autowired
 	NewsDAO newsDAO;
 
+	@Autowired
+	LoginTicketDAO loginTicketDAO;
+
 	@Test
 	public void contextLoads() {
 		Random random=new Random();
-		for(int i=1;i<11;i++){
+		for(int i=1;i<20;i++){
 			User user=new User();
 			user.setId(i);
 			user.setName(String.format("user%d",i));
 			user.setPassword("");
 			user.setHeadUrl(String.format("http://images.nowcoder.com/head/%dt.png",random.nextInt(10*i)));
 			user.setSalt(UUID.randomUUID().toString().substring(10));
+			user.setEmail(String.format("%d@qq.com",i));
 			userDAO.addUser(user);
 			user.setPassword(String.format("password%d",i));
 			userDAO.updatePassword(user);
+
+			LoginTicket ticket = new LoginTicket();
+			ticket.setUserId(user.getId());
+			ticket.setTicket(String.format("ticket%d",i));
+			ticket.setExpired(new Date(System.currentTimeMillis()+1000*3600*24));
+			ticket.setStatus(0);
+			loginTicketDAO.addLoginTicket(ticket);
 		}
 		userDAO.deleteById(1);
 		User user=userDAO.selectUserById(2);
 		System.out.println(user);
+		Assert.assertEquals(2,loginTicketDAO.selectLoginTicket("ticket2").getUserId());
+		loginTicketDAO.updateStatus("ticket2",1);
+		Assert.assertEquals(1,loginTicketDAO.selectLoginTicket("ticket2").getStatus());
 
-		for(int i=1;i<10;i++){
+		for(int i=2;i<20;i++){
 			News news =new News();
 			news.setId(i);
 			news.setImage(String.format("http://images.nowcoder.com/head/%dm.png",random.nextInt(10*i)));
@@ -53,7 +70,7 @@ public class InitDatabasesTests {
 			date.setTime(date.getTime() + 1000*3600*5*i);
 			news.setCreatedDate(date);
 			news.setLink(String.format("http://www.nowcoder.com/%d.html", i));
-			news.setUserId(i+1);
+			news.setUserId(i);
 			news.setTitle(String.format("TITLE{%d}", i));
 			newsDAO.addNews(news);
 		}

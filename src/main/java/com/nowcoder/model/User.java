@@ -7,15 +7,19 @@ public class User {
     private String password;
     private String salt;
     private String headUrl;
+    private String email;
 
     public User() {
 
     }
-    public User(String name) {
+
+    public User(int id, String name, String password, String salt, String headUrl, String email) {
+        this.id = id;
         this.name = name;
-        this.password = "";
-        this.salt = "";
-        this.headUrl = "";
+        this.password = password;
+        this.salt = salt;
+        this.headUrl = headUrl;
+        this.email = email;
     }
 
     public User(int id, String name) {
@@ -63,6 +67,14 @@ public class User {
         this.id = id;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -71,6 +83,7 @@ public class User {
                 ", password='" + password + '\'' +
                 ", salt='" + salt + '\'' +
                 ", headUrl='" + headUrl + '\'' +
+                ", email='" + email + '\'' +
                 '}';
     }
 }
