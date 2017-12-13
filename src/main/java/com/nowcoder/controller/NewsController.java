@@ -22,6 +22,7 @@ public class NewsController extends BaseController{
     @Autowired
     private HostHolder hostHolder;
 
+
     @RequestMapping(path = {"/user/addNews/"},method = RequestMethod.POST)
     @ResponseBody
     public String addNews(@RequestParam("image") String image,
@@ -67,7 +68,7 @@ public class NewsController extends BaseController{
     @ResponseBody
     public String uploadImage(@RequestPart("file")MultipartFile file){
        try{
-           String fileUrl=newsService.saveImage(file);
+           String fileUrl= newsService.saveImage(file);
            if(fileUrl==null){
                return ToutiaoUtil.getJSONString(1,"图片上传失败");
            }
