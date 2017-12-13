@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +16,24 @@ public class ToutiaoUtil {
     private static final int LOGING_TICKET_DEFAULT_EXPIRED_TIME=1000*3600*12;//12 hour
     //勾选自动登录时，票据过期时间
     private static final int LOGING_TICKET_REMEMBER_EXPIRED_TIME=1000*3600*24*3;//3 day
+
+    //系统允许上传的图片格式
+    private static final String[] IMAGE_FILE_EXTD={"jpg","jpeg","bmp","png"};
+    //图片本地保存根目录
+    private static final String SEPARATER=File.separator;
+    public static final String IMAGE_FILE_STORAGE_DIR=SEPARATER+"home"+ SEPARATER+"chenny"+SEPARATER+"files"+SEPARATER+"uploadImage"+SEPARATER; //linux
+    //项目域名//
+    public static final String TOUTIAO_DOMAIN="http://localhost:8080/";
+
+    public static boolean isFileAllowed(String fileExt) {
+        for(String ext:IMAGE_FILE_EXTD){
+            if(ext.equals(fileExt)){
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     public static int getLoginTicketExpired(int remeber){
         return remeber==0?LOGING_TICKET_DEFAULT_EXPIRED_TIME:LOGING_TICKET_REMEMBER_EXPIRED_TIME;
@@ -71,4 +90,6 @@ public class ToutiaoUtil {
             return null;
         }
     }
+
+
 }
