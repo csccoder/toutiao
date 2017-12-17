@@ -1,10 +1,7 @@
-package com.nowcoder.service.serviceImp;
+package com.nowcoder.service.impl;
 
 import com.aliyun.oss.OSSClient;
-import com.aliyun.oss.common.comm.ResponseMessage;
-import com.aliyun.oss.model.PutObjectResult;
 import com.nowcoder.service.OOSService;
-import com.nowcoder.util.ToutiaoUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -12,7 +9,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.UUID;
 
 /**

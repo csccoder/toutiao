@@ -1,11 +1,10 @@
 package com.nowcoder;
 
+import com.nowcoder.dao.CommentDAO;
 import com.nowcoder.dao.LoginTicketDAO;
 import com.nowcoder.dao.NewsDAO;
 import com.nowcoder.dao.UserDAO;
-import com.nowcoder.model.LoginTicket;
-import com.nowcoder.model.News;
-import com.nowcoder.model.User;
+import com.nowcoder.model.*;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,6 +29,9 @@ public class InitDatabasesTests {
 
 	@Autowired
 	LoginTicketDAO loginTicketDAO;
+
+	@Autowired
+	CommentDAO commentDAO;
 
 	@Test
 	public void contextLoads() {
@@ -73,9 +75,25 @@ public class InitDatabasesTests {
 			news.setUserId(i);
 			news.setTitle(String.format("TITLE{%d}", i));
 			newsDAO.addNews(news);
-		}
 
+			for(int j=1;j<=3;j++){
+				Comment comment = new Comment();
+				comment.setUserId(i);
+				comment.setContent("hello"+i);
+				comment.setCreatedDate(new Date());
+				comment.setEntityId(i);
+				comment.setEntityType(Entitype.NEWS.getValue());
+				comment.setStatus(0);
+				commentDAO.addComment(comment);
+			}
+
+
+		}
 		System.out.println(newsDAO.selectByUserIdAndOffset(0,0,10));
+		commentDAO.updateStatus(3,1);
+		Assert.assertEquals(3,commentDAO.selectCount(3,Entitype.NEWS.getValue()));
+
+
 
 	}
 

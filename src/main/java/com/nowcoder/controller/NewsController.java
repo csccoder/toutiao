@@ -1,11 +1,14 @@
 package com.nowcoder.controller;
 
-import com.nowcoder.model.HostHolder;
-import com.nowcoder.model.News;
+import com.nowcoder.model.*;
+import com.nowcoder.service.CommentService;
+import com.nowcoder.service.LikeService;
 import com.nowcoder.service.NewsService;
+import com.nowcoder.service.UserService;
 import com.nowcoder.util.ToutiaoUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,7 +16,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Controller
 public class NewsController extends BaseController{
@@ -21,7 +26,80 @@ public class NewsController extends BaseController{
     private NewsService newsService;
     @Autowired
     private HostHolder hostHolder;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private CommentService commentService;
+    @Autowired
+    private LikeService likeService;
 
+    @RequestMapping(path = {"/news/deleteComment/{newsId}/{commentId}"},method = RequestMethod.GET)
+    public String deleteComment(@PathVariable("newsId")int newsId,@PathVariable("commentId") int commentId){
+        try{
+            commentService.deleteComment(commentId);
+            return "redirect:/news/"+newsId;
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.error("删除资讯评论失败"+e.getMessage());
+            return "error";
+        }
+    }
+
+    @RequestMapping(path = {"/addComment"}, method = {RequestMethod.POST})
+    public String addComment(@RequestParam("newsId") int newsId,
+                             @RequestParam("content") String content) {
+        try{
+            Comment comment = new Comment();
+            comment.setUserId(hostHolder.get().getId());
+            comment.setContent(content);
+            comment.setEntityId(newsId);
+            comment.setEntityType(Entitype.NEWS.getValue());
+            comment.setCreatedDate(new Date());
+            comment.setStatus(0);
+            commentService.addComment(comment);
+            //todo:需要异步实现更新评论数
+            int count = commentService.selectCount(newsId, Entitype.NEWS.getValue());
+            newsService.updateCommentCount(newsId,count);
+            return "redirect:/news/"+newsId;
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.error("插入资讯评论失败"+e.getMessage());
+            return "error";
+        }
+    }
+
+
+    @RequestMapping(path = {"/news/{newsId}"}, method = {RequestMethod.GET})
+    public String newsDetail(Model model, @PathVariable("newsId") int newsId){
+        try{
+            News news = newsService.selectById(newsId);
+            if(news!=null){
+                User owner = userService.selectUserById(news.getUserId());
+                List<ViewObject> commentVOs=new ArrayList<ViewObject>();
+                List<Comment> comments = commentService.selectComment(news.getId(), Entitype.NEWS.getValue());
+                for(Comment comment:comments){
+                    ViewObject viewObject = new ViewObject();
+                    viewObject.set("comment",comment);
+                    viewObject.set("user",userService.selectUserById(comment.getUserId()));
+                    commentVOs.add(viewObject);
+                }
+                int likeStatus=0;
+                if(hostHolder.get()!=null){
+                    likeStatus=likeService.likeStatus(hostHolder.get().getId(),Entitype.NEWS.getValue(),newsId);
+                }
+                model.addAttribute("like",likeStatus);
+                model.addAttribute("news",news);
+                model.addAttribute("owner",owner);
+                model.addAttribute("comments",commentVOs);
+                return "detail";
+            }
+            return "error";
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.info("查询资讯详细信息失败"+e.getMessage());
+        }
+        return "error";
+    }
 
     @RequestMapping(path = {"/user/addNews/"},method = RequestMethod.POST)
     @ResponseBody

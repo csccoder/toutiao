@@ -1,7 +1,10 @@
 package com.nowcoder.controller;
 
+import com.nowcoder.model.Entitype;
+import com.nowcoder.model.HostHolder;
 import com.nowcoder.model.News;
 import com.nowcoder.model.ViewObject;
+import com.nowcoder.service.LikeService;
 import com.nowcoder.service.NewsService;
 import com.nowcoder.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,10 @@ public class HomeController extends BaseController {
     private NewsService newsService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private LikeService likeService;
+    @Autowired
+    private HostHolder hostHolder;
 
     public List<ViewObject> getNews(int userId, int offset, int limit) {
         List<ViewObject> vos = new ArrayList<ViewObject>();
@@ -28,6 +35,11 @@ public class HomeController extends BaseController {
             ViewObject vo = new ViewObject();
             vo.set("news", news);
             vo.set("user", userService.selectUserById(news.getUserId()));
+            if(hostHolder.get()!=null){
+                vo.set("like",likeService.likeStatus(hostHolder.get().getId(), Entitype.NEWS.getValue(),news.getId()));
+            }else {
+                vo.set("like",0);
+            }
             vos.add(vo);
         }
         return vos;

@@ -1,4 +1,4 @@
-package com.nowcoder.service.serviceImp;
+package com.nowcoder.service.impl;
 
 import com.nowcoder.dao.NewsDAO;
 import com.nowcoder.model.News;
@@ -16,16 +16,21 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * @author chenny
+ */
 @Service
 public class NewsServiceImpl implements NewsService{
     @Autowired
     private NewsDAO newsDAO;
     @Autowired
     private OOSService oosService;
+    @Override
     public List<News> getLatestNews(int userId, int offset, int limit) {
         return newsDAO.selectByUserIdAndOffset(userId, offset, limit);
     }
 
+    @Override
     public String saveImage(MultipartFile file) throws IOException {
         //图片格式检测
         int dotPos = file.getOriginalFilename().lastIndexOf(".");
@@ -53,7 +58,25 @@ public class NewsServiceImpl implements NewsService{
         return oosService.saveImage(file);
     }
 
+    @Override
     public void addNews(News news) {
         newsDAO.addNews(news);
     }
+
+    @Override
+    public News selectById(int newsId) {
+        return newsDAO.selectById(newsId);
+    }
+
+    @Override
+    public void updateCommentCount(int newsId, int count) {
+        newsDAO.updateCommentCount(newsId,count);
+    }
+
+    @Override
+    public void updateLikeCount(int newsId, int count) {
+        newsDAO.updateLikeCount(newsId,count);
+    }
+
+
 }

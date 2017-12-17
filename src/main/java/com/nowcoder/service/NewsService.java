@@ -12,4 +12,10 @@ public interface NewsService {
     String saveImage(MultipartFile file) throws IOException;
 
     void addNews(News news);
+
+    News selectById(int newsId);
+
+    void updateCommentCount(int newsId, int count);
+
+    void updateLikeCount(int newsId,int count);
 }
