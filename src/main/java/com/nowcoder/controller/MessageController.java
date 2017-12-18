@@ -97,7 +97,7 @@ public class MessageController extends BaseController{
             message.setContent(content);
             message.setCreatedDate(new Date());
             message.setHasRead(0);
-            String conversationId=fromId<toId?String.format("%d_%d",fromId,toId):String.format("%d_%d",toId,fromId);
+            String conversationId=ToutiaoUtil.getConversationId(fromId,toId);
             message.setConversationId(conversationId);
             messageService.sendMessage(message);
             return ToutiaoUtil.getJSONString(message.getId());

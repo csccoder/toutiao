@@ -8,18 +8,21 @@ public class User {
     private String salt;
     private String headUrl;
     private String email;
+    //0 邮件为激活;1 正常使用 ; 2 账号注销 禁止使用
+    private int status;
 
     public User() {
 
     }
 
-    public User(int id, String name, String password, String salt, String headUrl, String email) {
+    public User(int id, String name, String password, String salt, String headUrl, String email, int status) {
         this.id = id;
         this.name = name;
         this.password = password;
         this.salt = salt;
         this.headUrl = headUrl;
         this.email = email;
+        this.status = status;
     }
 
     public User(int id, String name) {
@@ -75,8 +78,17 @@ public class User {
         this.email = email;
     }
 
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
     @Override
-    public String toString() {
+    public String
+    toString() {
         return "User{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
@@ -84,6 +96,7 @@ public class User {
                 ", salt='" + salt + '\'' +
                 ", headUrl='" + headUrl + '\'' +
                 ", email='" + email + '\'' +
+                ", status=" + status +
                 '}';
     }
 }

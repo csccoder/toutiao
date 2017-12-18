@@ -25,6 +25,13 @@ public class ToutiaoUtil {
     //项目域名//
     public static final String TOUTIAO_DOMAIN="http://localhost:8080/";
 
+    //邮箱激活标识 过期时间
+    public static int EMAIL_EXPIRE_TIME=60*5;
+
+    public static String getConversationId(int fromId,int toId){
+        return fromId<toId?String.format("%d_%d",fromId,toId):String.format("%d_%d",toId,fromId);
+    }
+
     public static boolean isFileAllowed(String fileExt) {
         for(String ext:IMAGE_FILE_EXTD){
             if(ext.equals(fileExt)){
@@ -92,4 +99,7 @@ public class ToutiaoUtil {
     }
 
 
+    public static int getEmailTokenExpireTime() {
+        return EMAIL_EXPIRE_TIME;
+    }
 }

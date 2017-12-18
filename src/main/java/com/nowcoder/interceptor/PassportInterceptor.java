@@ -13,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
 import java.util.Date;
 
 @Component
@@ -43,6 +44,7 @@ public class PassportInterceptor implements HandlerInterceptor {
             }
             //关联ticket对应的user信息，存放到HostHolder容器中，供当前线程的其他后续组件读取使用
             User user=userDAO.selectUserById(loginTicket.getUserId());
+
             hostHolder.set(user);
         }
 

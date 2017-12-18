@@ -9,6 +9,10 @@
             '<div class="wrapper-content clearfix">',
                 '<div class="input-section">',
                     '<div class="form-group">',
+                        '<label class="control-label">用户名</label>',
+                        '<div class="control-group js-username"><input type="text" placeholder="请输入用户名"></div>',
+                    '</div>',
+                     '<div class="form-group">',
                         '<label class="control-label">电子邮箱</label>',
                         '<div class="control-group js-email"><input type="email" placeholder="请输入邮箱"></div>',
                     '</div>',
@@ -36,6 +40,7 @@
                 var that = this;
                 var oEl = that.getEl();
                 that.emailIpt = oEl.find('div.js-email');
+                that.usernameIpt = oEl.find('div.js-username');
                 that.pwdIpt = oEl.find('div.js-pwd');
                 that.initCpn();
             }
@@ -54,7 +59,7 @@
                     type: 'post',
                     dataType: 'json',
                     data: {
-                        username: oData.email,
+                        username: oData.username,
                         password: oData.pwd,
                         rember: oData.rember ? 1 : 0
                     }
@@ -63,7 +68,7 @@
 //                        window.location.reload();
                         that.emit('login');
                     } else {
-                        oResult.msgname && that.iptError(that.emailIpt, oResult.msgname);
+                        oResult.msgname && that.iptError(that.usernameIpt, oResult.msgname);
                         oResult.msgpwd && that.iptError(that.pwdIpt, oResult.msgpwd);
                     }
                 }).fail(function () {
@@ -85,7 +90,8 @@
                     type: 'post',
                     dataType: 'json',
                     data: {
-                        username: oData.email,
+                        username: oData.username,
+                        email: oData.email,
                         password: oData.pwd
                     }
                 }).done(function (oResult) {
@@ -93,7 +99,8 @@
 //                        window.location.reload();
                         that.emit('register');
                     } else {
-                        oResult.msgname && that.iptError(that.emailIpt, oResult.msgname);
+                        oResult.msgname && that.iptError(that.usernameIpt, oResult.msgname);
+                        oResult.msgemail && that.iptError(that.emailIpt, oResult.msgemail);
                         oResult.msgpwd && that.iptError(that.pwdIpt, oResult.msgpwd);
                     }
                 }).fail(function () {
@@ -132,6 +139,7 @@
     function fInitCpn() {
         var that = this;
         that.emailIpt.find('input').on('focus', Base.bind(that.iptNone, that, that.emailIpt));
+        that.usernameIpt.find('input').on('focus', Base.bind(that.iptNone, that, that.username));
         that.pwdIpt.find('input').on('focus', Base.bind(that.iptNone, that, that.pwdIpt));
     }
 
@@ -139,16 +147,19 @@
         var that = this;
         var oEl = that.getEl();
         var oEmailIpt = that.emailIpt.find('input');
+        var oUsernameIpt = that.usernameIpt.find('input');
         var oPwdIpt = that.pwdIpt.find('input');
         var oRemberChk = oEl.find('.js-rember');
         if (arguments.length === 0) {
             return {
                 email: $.trim(oEmailIpt.val()),
+                username:$.trim(oUsernameIpt.val()),
                 pwd: $.trim(oPwdIpt.val()),
                 rember: oRemberChk.prop('checked')
             };
         } else {
             oEmailIpt.val($.trim(oData.email));
+            oUsernameIpt.val($.trim(oData.username));
             oPwdIpt.val($.trim(oData.pwd));
             oRemberChk.prop('checked', !!oData.rember);
         }
